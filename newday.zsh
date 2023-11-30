@@ -1,14 +1,15 @@
 #!/bin/zsh
 
-# Heutiges Datum im Format YYYY-MM-DD abrufen
-today=$(date +"%Y-%m-%d")
+# Benutzereingabe für den Tag
+echo "Geben Sie den Tag für Advent of Code ein:"
+read -r day_number
 
 # Advent of Code Ordner erstellen
-folder_name="adventofcode$(date +"%d")"
-mkdir $folder_name
+folder_name="adventofcode${day_number}"
+mkdir "$folder_name"
 
 # In den Ordner wechseln
-cd $folder_name
+cd "$folder_name"
 
 # C# Dotnet Projekt erstellen
 dotnet new console
@@ -18,7 +19,7 @@ touch input.txt
 touch test_input.txt
 
 # Solution.cs erstellen
-echo 'namespace adventofcode2023 
+echo "namespace adventofcode2023 
 {
     public class Solution
     {
@@ -40,10 +41,10 @@ echo 'namespace adventofcode2023
             return solution;
         }
     }
-}' > Solution.cs
+}" > Solution.cs
 
 # Program.cs leeren und den gewünschten Code einfügen
-echo 'using System;
+echo "using System;
 using System.Collections.Generic;
 using System.IO;
 using adventofcode2023;
@@ -53,15 +54,15 @@ class Program
     static void Main()
     {
         string[] lines;
-        Console.WriteLine("testdata? => print (y) ");
-        string testdata = "" + System.Console.ReadLine();
-        if (testdata == "y")
+        Console.WriteLine(\"testdata? => print (y) \");
+        string testdata = \"\" + System.Console.ReadLine();
+        if (testdata == \"y\")
         {
-            lines = File.ReadAllLines("test_input.txt");
+            lines = File.ReadAllLines(\"test_input.txt\");
         }
         else
         {
-            lines = File.ReadAllLines("input.txt");
+            lines = File.ReadAllLines(\"input.txt\");
         }
 
         var solution = new Solution();
@@ -69,25 +70,23 @@ class Program
         // System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
 
     }
-}
-' > Program.cs
+}" > Program.cs
 
 # Ins Überverzeichnis wechseln
 cd ..
 
 # Folder zu Git hinzufügen
-git add $folder_name
+git add "$folder_name"
 
 # Commit erstellen
-git commit -m "empty project init - day $today"
+git commit -m "empty project init - day ${day_number}"
 
 # Den Commit pushen
 git push
 
 # Nachricht ausgeben
-echo "Advent of Code Projekt für Tag $today erstellt und gepusht!"
+echo "Advent of Code Projekt für Tag ${day_number} erstellt und gepusht!"
 
 # In den Ordner wechseln und in VSCode öffnen
-cd $folder_name
+cd "$folder_name"
 code .
-
