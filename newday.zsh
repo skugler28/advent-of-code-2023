@@ -86,3 +86,8 @@ git push
 
 # Nachricht ausgeben
 echo "Advent of Code Projekt für Tag $today erstellt und gepusht!"
+
+# In den Ordner wechseln und in VSCode öffnen
+cd $folder_name
+code .
+
