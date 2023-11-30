@@ -6,7 +6,8 @@ namespace adventofcode2023
         {
             string solution;
 
-            // Hier kommt die Logik für den ersten Teil hin
+            // Hier kommt die Logik für den ersten Teil hin, stuff is finito now
+            
 
             return solution;
         }
