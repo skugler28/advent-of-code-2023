@@ -19,7 +19,7 @@ class Program
             lines = File.ReadAllLines("input.txt");
         }
 
-        var solution = new Solution();
+        Solution solution = new();
         System.Console.WriteLine(solution.SolutionOfFirstPart(lines));
         // System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
 
