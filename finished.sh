@@ -6,7 +6,6 @@ read -r day_number
 
 # Advent of Code Ordner erstellen
 folder_name="adventofcode${day_number}"
-mkdir "$folder_name"
 
 # Folder zu Git hinzufügen
 git add $folder_name
