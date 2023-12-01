@@ -12,10 +12,10 @@ mkdir "$folder_name"
 git add $folder_name
 
 # Commit erstellen
-git commit -m "partial working - day $today"
+git commit -m "partial working - day $day_number"
 
 # Den Commit pushen
 git push
 
 # Nachricht ausgeben
-echo "Advent of Code Projekt für Tag $today gepusht!"
+echo "Advent of Code Projekt für Tag $day_number gepusht!"
