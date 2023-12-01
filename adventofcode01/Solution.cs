@@ -1,50 +1,38 @@
-using System;
-using System.Data;
-using System.Text.RegularExpressions;
-
 namespace adventofcode2023 
 {
     public class Solution
     {
-        public string SolutionOfFirstPart(string[] lines)
+        public string SolutionOfFirstPart(string[] allInputLines)
         {
-            int finalCounter = 0;
+            int sum = 0;
 
-            foreach (string line in lines)
+            foreach (string singleLine in allInputLines)
             {
-                char[] lineLetters = line.ToCharArray();
-                string resultThisRound = FirstNumberOfLine(lineLetters, out int index) + LastNumberOfLine(lineLetters, out int index2);
-                if(resultThisRound != "")
+                char[] allLettersOfThisLine = singleLine.ToCharArray();
+                string resultOfThisRound = GetFirstNumberInLine(allLettersOfThisLine, out int indexOfFirstNumber) + GetLastNumberInLine(allLettersOfThisLine, out int indexOfLastNumber);
+                if(resultOfThisRound != "")
                 {
-                    finalCounter += Convert.ToInt32(resultThisRound);
-                }
-                
-            }
-            return finalCounter.ToString();
-        }
-
-
-
-
-        public string SolutionOfSecondPart(string[] lines)
-        {
-            int finalCounter = 0;
-
-            foreach (string line in lines)
-            {
-                char[] lineLetters = line.ToCharArray();
-                string resultThisRound = CheckForWordBefore(ref lineLetters, FirstNumberOfLine(lineLetters, out int index), index) + CheckForWordAfter(ref lineLetters, LastNumberOfLine(lineLetters, out int index2), index2);
-
-                if(resultThisRound != "")
-                {
-                    finalCounter += Convert.ToInt32(resultThisRound);
+                    sum += Convert.ToInt32(resultOfThisRound);
                 }
             }
-
-            return finalCounter.ToString();
+            return sum.ToString();
         }
 
+        public string SolutionOfSecondPart(string[] allInputLines)
+        {
+            int sum = 0;
 
+            foreach (string singleLine in allInputLines)
+            {
+                char[] allLettersOfThisLine = singleLine.ToCharArray();
+                string resultOfThisRound = CheckForWordBefore(ref allLettersOfThisLine, GetFirstNumberInLine(allLettersOfThisLine, out int indexOfFirstNumber), indexOfFirstNumber) + CheckForWordAfter(ref allLettersOfThisLine, GetLastNumberInLine(allLettersOfThisLine, out int indexOfLastNumber), indexOfLastNumber);
+                if(resultOfThisRound != "")
+                {
+                    sum += Convert.ToInt32(resultOfThisRound);
+                }
+            }
+            return sum.ToString();
+        }
 
         private string CheckForWordBefore(ref char[] line, string digitNumber, int index)
         {
@@ -61,49 +49,14 @@ namespace adventofcode2023
                 }
                 while(preLine.Length >= 3)
                 {
-                    if(preLine.StartsWith("one"))
+                    string? possibleStartingNumber = GetPossibleNumberBeforeStartingNumber(preLine);
+                    if (possibleStartingNumber != null)
                     {
-                        return "1";
+                        return possibleStartingNumber;
                     }
-                    else if(preLine.StartsWith("two"))
-                    {
-                        return "2";
-                    }
-                    else if(preLine.StartsWith("three"))
-                    {
-                        return "3";
-                    }
-                    else if(preLine.StartsWith("four"))
-                    {
-                        return "4";
-                    }
-                    else if(preLine.StartsWith("five"))
-                    {
-                        return "5";
-                    }
-                    else if(preLine.StartsWith("six"))
-                    {
-                        return "6";
-                    }
-                    else if(preLine.StartsWith("seven"))
-                    {
-                        return "7";
-                    }
-                    else if(preLine.StartsWith("eight"))
-                    {
-                        return "8";
-                    }
-                    else if(preLine.StartsWith("nine"))
-                    {
-                        return "9";
-                    }
-                    else
-                    {
-                        string tmp = preLine.Remove(0, 1);
-                        preLine = tmp;
-                    }
+                    string tmp = preLine.Remove(0, 1);
+                    preLine = tmp;
                 }
-
             }
             return digitNumber;
         }
@@ -119,81 +72,69 @@ namespace adventofcode2023
                 }
                 while(preLine.Length >= 3)
                 {
-                    if(preLine.EndsWith("one"))
+                    string? possibleEndingNumber = GetPossibleNumberAfterEndingNumber(preLine);
+                    if (possibleEndingNumber != null)
                     {
-                        return "1";
+                        return possibleEndingNumber;
                     }
-                    else if(preLine.EndsWith("two"))
-                    {
-                        return "2";
-                    }
-                    else if(preLine.EndsWith("three"))
-                    {
-                        return "3";
-                    }
-                    else if(preLine.EndsWith("four"))
-                    {
-                        return "4";
-                    }
-                    else if(preLine.EndsWith("five"))
-                    {
-                        return "5";
-                    }
-                    else if(preLine.EndsWith("six"))
-                    {
-                        return "6";
-                    }
-                    else if(preLine.EndsWith("seven"))
-                    {
-                        return "7";
-                    }
-                    else if(preLine.EndsWith("eight"))
-                    {
-                        return "8";
-                    }
-                    else if(preLine.EndsWith("nine"))
-                    {
-                        return "9";
-                    }
-                    else
-                    {
-                        string tmp = preLine.Remove(preLine.Length - 1);
-                        preLine = tmp;
-                    }
+                    string tmp = preLine.Remove(preLine.Length - 1);
+                    preLine = tmp;
                 }
-
             }
             return digitNumber;
         }
 
-
-
-
-        private static string FirstNumberOfLine(char[] inputline, out int index)
+        private static string? GetPossibleNumberAfterEndingNumber(string preLine)
         {
-            for (int counter = 0; counter < inputline.Length; counter++)
-            {
-                string charToCheck = Convert.ToString(inputline[counter]);
-                if (char.IsDigit(charToCheck[0]))
-                {
-                    index = counter;
-                    return charToCheck;
-                }
-            }
-            index = 0;
-            return "";
+            return GetPossibleNumber(preLine, fromStart: false);
         }
-        private static string LastNumberOfLine(char[] inputline, out int index)
+        
+        private static string? GetPossibleNumberBeforeStartingNumber(string preLine)
         {
-            for (int counter = inputline.Length - 1; counter >= 0; counter--)
+            return GetPossibleNumber(preLine, fromStart: true);
+        }
+
+        private static string? GetPossibleNumber(string line, bool fromStart){
+            string[] possibleValues = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+            foreach(string value in possibleValues )
             {
-                string charToCheck = Convert.ToString(inputline[counter]);
+                if(fromStart && line.StartsWith(value))
+                {
+                    return Convert.ToString(Array.IndexOf(possibleValues, value) + 1);
+                }
+                else if (!fromStart && line.EndsWith(value))
+                {
+                    return Convert.ToString(Array.IndexOf(possibleValues, value) + 1);
+                }
+            }
+            return null;
+        }
+
+        private static string GetFirstNumberInLine(char[] inputLine, out int index)
+        {
+            return GetNumberInLine(inputLine, out index, fromStart: true);
+        }
+
+        private static string GetLastNumberInLine(char[] inputLine, out int index)
+        {
+            return GetNumberInLine(inputLine, out index, fromStart: false);
+        }
+
+        private static string GetNumberInLine(char[] inputLine, out int index, bool fromStart)
+        {
+            int start = fromStart ? 0 : inputLine.Length - 1;
+            int step = fromStart ? 1 : -1;
+
+            for (int counter = start; counter >= 0 && counter < inputLine.Length; counter += step)
+            {
+                string charToCheck = Convert.ToString(inputLine[counter]);
                 if (char.IsDigit(charToCheck[0]))
                 {
                     index = counter;
                     return charToCheck;
                 }
             }
+
             index = 0;
             return "";
         }
