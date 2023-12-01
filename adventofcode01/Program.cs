@@ -21,7 +21,7 @@ class Program
 
         Solution solution = new();
         System.Console.WriteLine(solution.SolutionOfFirstPart(lines));
-        // System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
+        System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
 
     }
 }
