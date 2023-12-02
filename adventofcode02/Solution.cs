@@ -1,3 +1,4 @@
+
 namespace adventofcode2023
 {
     public class Solution
@@ -8,64 +9,21 @@ namespace adventofcode2023
 
             foreach (string game in lines)
             {
-                int redCubes = 12;
-                int greenCubes = 13;
-                int blueCubes = 14;
+                Dictionary<string, int> cubeAmounts = InitalizeCubeAmounts(new int[] { 12, 13, 14 });
+
                 int gameID = 0;
                 bool gameIsPossible = true;
 
-                string[] cubes = game.Split(',', ';', ':');
+                // Here we split up the game into its parts: The GameID and each color pull
+                // and then extract the gameID which gets stated in the first "round" of the game
+                string[] allPulls = game.Split(',', ';', ':');
+                gameID = ExtractGameID(allPulls[0]);
+                
+                ProcessPulls(allPulls, cubeAmounts, ref gameIsPossible);
 
-                foreach (string cube in cubes)
-                {
-                    if (cube == cubes[0])
-                    {
-                        gameID = Convert.ToInt32(cube[5..]);
-                    }
-                    else
-                    {
-                        string[] drawing = cube.Split(' ');
-                        if (drawing[0] != "")
-                        {
-                            throw new System.Exception("drawing[0] is not empty");
-                        }
-                        switch (drawing[2])
-                        {
-                            case "red":
-                                if (redCubes < Convert.ToInt32(drawing[1]))
-                                {
-                                    gameIsPossible = false;
-                                }
-                                break;
-                            case "green":
-                                if (greenCubes < Convert.ToInt32(drawing[1]))
-                                {
-                                    gameIsPossible = false;
-                                }
-                                break;
-                            case "blue":
-                                if (blueCubes < Convert.ToInt32(drawing[1]))
-                                {
-                                    gameIsPossible = false;
-                                }
-                                break;
-                        }
-                    }
-                    if (redCubes < 0 || greenCubes < 0 || blueCubes < 0)
-                    {
-                        gameIsPossible = false;
-                    }
-                    if (!gameIsPossible)
-                    {
-                        break;
-                    }
-                }
-
-                if (gameIsPossible)
-                {
-                    sumOfIds += gameID;
-                }
+                if (gameIsPossible) sumOfIds += gameID;
             }
+
             return sumOfIds.ToString();
         }
 
@@ -75,56 +33,74 @@ namespace adventofcode2023
 
             foreach (string game in lines)
             {
-                int redCubes = 0;
-                int greenCubes = 0;
-                int blueCubes = 0;
+                Dictionary<string, int> cubeAmounts = InitalizeCubeAmounts();
+                
+                string[] allPulls = game.Split(';', ':');
+                UpdateCubeAmounts(allPulls.Skip(1), cubeAmounts); //  skip the first round because it only contains the gameID
 
-                string[] cubes = game.Split(';', ':'); // ','
-
-                foreach (string cube in cubes)
-                {
-                    if (cube == cubes[0])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        string[] pulls = cube.Split(',');
-                        foreach (string pull in pulls)
-                        {
-                            string[] drawing = pull.Split(' ');
-                            if (drawing[0] != "")
-                            {
-                                Console.WriteLine(drawing[0]);
-                                throw new System.Exception("drawing[0] is not empty");
-                            }
-                            switch (drawing[2])
-                            {
-                                case "red":
-                                    if (redCubes < Convert.ToInt32(drawing[1]))
-                                    {
-                                        redCubes = Convert.ToInt32(drawing[1]);
-                                    }
-                                    break;
-                                case "green":
-                                    if (greenCubes < Convert.ToInt32(drawing[1]))
-                                    {
-                                        greenCubes = Convert.ToInt32(drawing[1]);
-                                    }
-                                    break;
-                                case "blue":
-                                    if (blueCubes < Convert.ToInt32(drawing[1]))
-                                    {
-                                        blueCubes = Convert.ToInt32(drawing[1]);
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                }
-                powerOfBalls += redCubes * greenCubes * blueCubes;
+                CalculatePowerOfBalls(cubeAmounts, ref powerOfBalls);
             }
+
             return powerOfBalls.ToString();
+        }
+
+
+
+
+
+
+        private static void ProcessPulls(string[] allPulls, Dictionary<string, int> cubeAmounts, ref bool gameIsPossible)
+        {
+            for (int i = 1; i < allPulls.Length && gameIsPossible; i++)
+            {
+                string thisDrawRound = allPulls[i];
+                string[] colorOfDrawing = thisDrawRound.Split(' ');
+
+                if (cubeAmounts.TryGetValue(colorOfDrawing[2], out int availableAmount) && availableAmount < Convert.ToInt32(colorOfDrawing[1]))
+                {
+                    gameIsPossible = false;
+                }
+            }
+        }
+        private static int ExtractGameID(string firstRound)
+        {
+            return Convert.ToInt32(firstRound[5..]);
+        }
+
+        private static void CalculatePowerOfBalls(Dictionary<string, int> cubeAmounts, ref int powerOfBalls)
+        {
+            powerOfBalls += cubeAmounts["red"] * cubeAmounts["green"] * cubeAmounts["blue"];
+        }
+
+        private static void UpdateCubeAmounts(IEnumerable<string> pulls, Dictionary<string, int> cubeAmounts)
+        {
+            foreach (string thisPullRound in pulls)
+            {
+                string[] pullsThisRound = thisPullRound.Split(',');
+
+                foreach (string pull in pullsThisRound)
+                {
+                    string[] drawing = pull.Split(' ');
+                    
+                    // exchange the entry in the dictionary if the new value is bigger
+                    cubeAmounts[drawing[2]] = Math.Max(cubeAmounts[drawing[2]], Convert.ToInt32(drawing[1]));
+                }
+            }
+        }
+
+        private static Dictionary<string, int> InitalizeCubeAmounts(int[]? values = null)
+        {
+            if (values == null || values.Length != 3)
+            {
+                values = new int[] { 0, 0, 0 };
+            }
+
+            return new Dictionary<string, int>()
+            {
+                { "red", values[0] },
+                { "green", values[1] },
+                { "blue", values[2] }
+            };
         }
     }
 }
