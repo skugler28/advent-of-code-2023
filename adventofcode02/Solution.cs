@@ -2,9 +2,6 @@ namespace adventofcode2023
 {
     public class Solution
     {
-
-        // only 12 red cubes, 13 green cubes, and 14 blue cubes
-
         public static string SolutionOfFirstPart(string[] lines)
         {
             int sumOfIds = 0;
@@ -128,42 +125,6 @@ namespace adventofcode2023
                 powerOfBalls += redCubes * greenCubes * blueCubes;
             }
             return powerOfBalls.ToString();
-
-            // should be 67335
         }
-        // public string SolutionOfSecondPart(string[] lines)
-        // {
-        //     int solution = 0;
-
-        //     foreach (string game in lines)
-        //     {
-        //         int red = 0;
-        //         int green = 0;
-        //         int blue = 0;
-        //         foreach (string grab in game.Split(":")[1].Split(";"))
-        //         {
-        //             foreach (string color in grab.Split(","))
-        //             {
-        //                 string[] parts = color.Split(" ");
-        //                 switch (parts[2])
-        //                 {
-        //                     case "red":
-        //                         red = int.Parse(parts[1]) > red ? int.Parse(parts[1]) : red;
-        //                         break;
-        //                     case "green":
-        //                         green = int.Parse(parts[1]) > green ? int.Parse(parts[1]) : green;
-        //                         break;
-        //                     case "blue":
-        //                         blue = int.Parse(parts[1]) > blue ? int.Parse(parts[1]) : blue;
-        //                         break;
-        //                 }
-        //             }
-        //         }
-        //         solution += red * green * blue;
-
-        //     }
-
-        //     return solution.ToString();
-        // }
     }
 }
