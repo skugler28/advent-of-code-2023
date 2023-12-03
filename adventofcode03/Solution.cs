@@ -149,7 +149,7 @@ namespace adventofcode2023
             for (int i = numberList.Count - 1; i >= 0; i--)
             {
                 NumberObject numberObject = numberList[i];
-                if (numberObject.Status)
+                if (numberObject.Status || !numberObject.Gear)
                 {
                     numberList.RemoveAt(i);
                 }
@@ -157,18 +157,31 @@ namespace adventofcode2023
             }
 
             List<NumberObject> gearList = numberList.Where(x => x.Gear).ToList();
-            foreach (NumberObject numberObject in gearList)
+            const int nullIndexOfList = 0;
+            while ( nullIndexOfList <= gearList.Count - 1)
             {
+                NumberObject numberObject = gearList[nullIndexOfList];
+                Debug.WriteLineIf(iWannaDebugThis, $"{numberObject.Number}");
                 if (numberObject.Gear)
                 {
                     NumberObject otherPart = gearList.FirstOrDefault(x =>
                         x.GearCords.GearLine == numberObject.GearCords.GearLine &&
-                        x.GearCords.GearIndex == numberObject.GearCords.GearIndex);
+                        x.GearCords.GearIndex == numberObject.GearCords.GearIndex &&
+                        (x.Index != numberObject.Index ||
+                        x.Line != numberObject.Line))!;
 
                     if (otherPart != null)
                     {
                         Debug.WriteLineIf(iWannaDebugThis, $"{numberObject.Number} * {otherPart.Number}");
                         solution += (numberObject.Number * otherPart.Number);
+
+                        // Lösche die beiden Objekte aus der Liste
+                        gearList.RemoveAt(nullIndexOfList);
+                        gearList.Remove(otherPart);
+                    }
+                    else
+                    {
+                        gearList.RemoveAt(nullIndexOfList);
                     }
                 }
             }
