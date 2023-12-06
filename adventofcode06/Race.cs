@@ -14,7 +14,7 @@ namespace adventofcode2023
             {
                 speed++;
             }
-            WinCount = Time - (2 * speed) + 1;
+            WinCount = Time - (2 * speed) + 1; // +1 because we already found the first one
         }
 
         public long ReturnWins()
@@ -22,11 +22,9 @@ namespace adventofcode2023
             return WinCount;
         }
 
-
-
         private static long GetCurrentDistance(long speed, long time)
         {
-            return speed * (time-speed);
+            return speed * (time - speed);
         }
     }
 
