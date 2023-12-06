@@ -165,7 +165,7 @@ namespace adventofcode2023
                 i++;
             }
         }
-
+ 
         private static Scratchcard GenerateScratchcard(int gameNumber, int winCount)
         {
             return new Scratchcard

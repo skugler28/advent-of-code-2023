@@ -4,7 +4,7 @@ using System.IO;
 using adventofcode2023;
 
 class Program
-{
+{ 
     static void Main()
     {
         string[] lines;
