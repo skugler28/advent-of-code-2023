@@ -1,10 +1,10 @@
 using System.Diagnostics;
 
-namespace adventofcode2023 
+namespace adventofcode2023
 {
     public class Solution
     {
-        public string SolutionOfFirstPart(string[] lines)
+        public static string SolutionOfFirstPart(string[] lines)
         {
             int solution = 0;
             List<int> winningNumbers = new();
@@ -15,48 +15,51 @@ namespace adventofcode2023
 
                 FillListWithWinningNumbers(ref winningNumbers, numbers);
 
-                solution += CalculatePoints(winningNumbers, numbers);
+                solution += CalculatePoints(ref winningNumbers, numbers);
 
                 ClearList(ref winningNumbers);
             }
             return solution.ToString();
         }
 
+        public static string SolutionOfSecondPart(string[] lines)
+        {
+            int solution = 0;
+            Scratchcard[] scratchcards = new Scratchcard[lines.Length];
+
+            InitializeEachCard(ref scratchcards, ref lines);
+            DuplicateTheWins(ref scratchcards);
+
+            return solution.ToString();
+        }
+
+
+
         private static void ClearList(ref List<int> winningNumbers)
         {
             winningNumbers = new();
         }
 
-        private static int CalculatePoints(List<int> winningNumbers, string[] numbers)
+        private static int CalculatePoints(ref List<int> winningNumbers, string[] numbers)
         {
             bool foundRegularNumbers = false;
             int points = 0;
+
             foreach (string number in numbers)
             {
-                if(foundRegularNumbers && number != "")
+                if (foundRegularNumbers && number != "" && CheckForWin(ref winningNumbers, number))
                 {
-                    if (CheckForWin(ref winningNumbers, number))
-                    {
-                        if(points == 0)
-                        {
-                            points = 1;
-                        }
-                        else
-                        {
-                            points *= 2;
-                        }
-                    }
+                    points = (points == 0) ? 1 : points * 2;
                 }
-                else
+                else if (number == "|")
                 {
-                    if (number == "|")
-                    {
-                        foundRegularNumbers = true;
-                    }
+                    foundRegularNumbers = true;
                 }
             }
+
             return points;
         }
+
 
         private static bool CheckForWin(ref List<int> winningNumbers, string number)
         {
@@ -73,56 +76,24 @@ namespace adventofcode2023
         private static void FillListWithWinningNumbers(ref List<int> winningNumbers, string[] numbers)
         {
             bool foundWinningNumbers = false;
+
             foreach (string number in numbers)
             {
-                if(foundWinningNumbers)
+                if (foundWinningNumbers)
                 {
-                    if (number == "|")
-                    {
-                        break;
-                    }
+                    if (number == "|") break;
+
                     if (number != "")
                     {
                         winningNumbers.Add(int.Parse(number));
                     }
+                        
                 }
-                else
+                else if (number.EndsWith(":"))
                 {
-                    if (number.EndsWith(":"))
-                    {
-                        foundWinningNumbers = true;
-                    }
+                    foundWinningNumbers = true;
                 }
             }
-        }
-
-
-
-
-
-
-
-
-        public string SolutionOfSecondPart(string[] lines)
-        {
-            int solution = 0;
-            Scratchcard[] scratchcards = new Scratchcard[lines.Length];
-
-            InitializeEachCard(ref scratchcards, ref lines);
-            foreach (Scratchcard scratchcard in scratchcards)
-            {
-                Debug.WriteLine("Game" + scratchcard.GameNumber + " gibt es " + scratchcard.Count + "x mit Wins: " + scratchcard.WinCount);
-            }
-
-            Debug.WriteLine("--------------------------------------------------");
-            DuplicateTheWins(ref scratchcards);
-            foreach (Scratchcard scratchcard in scratchcards)
-            {
-                Debug.WriteLine("Game" + scratchcard.GameNumber + " gibt es " + scratchcard.Count + "x mit Wins: " + scratchcard.WinCount);
-                solution += scratchcard.Count;
-            }
-
-            return solution.ToString();
         }
 
         private static void DuplicateTheWins(ref Scratchcard[] scratchcards)
@@ -146,7 +117,6 @@ namespace adventofcode2023
         private static void InitializeEachCard(ref Scratchcard[] scratchcards, ref string[] lines)
         {
             bool foundGameNumber = false;
-            bool foundWinningNumbers = false;
             bool foundRegularNumbers = false;
             int gameNumber = 0;
             int winCount = 0;
@@ -157,17 +127,17 @@ namespace adventofcode2023
                 string[] numbers = game.Split(" ");
                 foreach (string item in numbers)
                 {
-                    if(foundGameNumber && item != "")
+                    if (foundGameNumber && item != "")
                     {
-                        if(item != "|" && !foundRegularNumbers)
+                        if (item != "|" && !foundRegularNumbers)
                         {
                             winningNumbers.Add(int.Parse(item));
                         }
                         else
                         {
-                            if(foundRegularNumbers)
+                            if (foundRegularNumbers)
                             {
-                                if(CheckForWin(ref winningNumbers, item))
+                                if (CheckForWin(ref winningNumbers, item))
                                 {
                                     winCount++;
                                 }
@@ -188,10 +158,10 @@ namespace adventofcode2023
                     }
                 }
                 scratchcards[i] = GenerateScratchcard(gameNumber, winCount);
-                foundGameNumber = false;  
+                foundGameNumber = false;
                 foundRegularNumbers = false;
                 winCount = 0;
-                winningNumbers = new();
+                ClearList(ref winningNumbers);
                 i++;
             }
         }

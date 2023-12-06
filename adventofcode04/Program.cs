@@ -20,8 +20,8 @@ class Program
         }
 
         var solution = new Solution();
-        System.Console.WriteLine(solution.SolutionOfFirstPart(lines));
-        System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
+        System.Console.WriteLine(Solution.SolutionOfFirstPart(lines));
+        System.Console.WriteLine(Solution.SolutionOfSecondPart(lines));
 
     }
 }
