@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using adventofcode2023;
 
@@ -18,10 +19,9 @@ class Program
         {
             lines = File.ReadAllLines("input.txt");
         }
-
-        var solution = new Solution();
-        System.Console.WriteLine(solution.SolutionOfFirstPart(lines));
-        // System.Console.WriteLine(solution.SolutionOfSecondPart(lines));
+        System.Console.WriteLine(Solution.SolutionOfFirstPart(lines));
+        Debug.WriteLine("");
+        System.Console.WriteLine(Solution.SolutionOfSecondPart(lines));
 
     }
 }
