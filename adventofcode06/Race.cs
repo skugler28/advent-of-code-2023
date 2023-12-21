@@ -1,11 +1,10 @@
-
 namespace adventofcode2023
 {
     public class Race
     {
-        public long Time {get; set;}
-        public long Distance {get; set;}
-        private long WinCount {get; set;}
+        public long Time;
+        public long Distance;
+        private long WinCount;
 
         public void CalculateWins()
         {
@@ -27,9 +26,4 @@ namespace adventofcode2023
             return speed * (time - speed);
         }
     }
-
-
-
-
-
 }
